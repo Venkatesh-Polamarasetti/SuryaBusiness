@@ -411,13 +411,13 @@
       <div class="chart-card">
         <h3>Profit / Loss per Term</h3>
         <div class="chart-wrap">
-          <canvas id="barChart" width="100%" height="280"></canvas>
+          <canvas id="barChart" width="100%" height="50%"></canvas>
         </div>
       </div>
       <div class="chart-card">
         <h3>Overall Profit</h3>
         <div class="chart-wrap">
-          <canvas id="overallChart"  width="100%" height="280"></canvas>
+          <canvas id="overallChart"  width="100%" height="50%"></canvas>
         </div>
       </div>
     </div>
@@ -874,7 +874,8 @@ function closeDetail() {
      '/files/shrimp_farm_2024.xlsx'
    Set to null or '' to disable auto-load.
 ═══════════════════════════════════════════════ */
-const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
+const EXCEL_FILE_PATH = 'SuryaBusiness/data.xlsx';   // ← UPDATE THIS PATH
+//const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
 
 async function autoLoad() {
   if (!EXCEL_FILE_PATH) return;

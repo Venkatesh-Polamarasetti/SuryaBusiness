@@ -70,6 +70,18 @@
     filter: drop-shadow(0 0 8px rgba(0,212,170,0.6));
     animation: float 3s ease-in-out infinite;
   }
+  .logo-icon-img {
+    font-size:28px !important;
+    filter: drop-shadow(0 0 8px rgba(0,212,170,0.6));
+    background-image: url('/logo2.jpg');
+    /* Optional: Add other background properties for better control */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-size: cover;      /* Scales the image to cover the entire element */
+    background-position: center; /* Centers the image */
+	width: 35px;
+    height: 35px;
+	border-radius: 8%;
+  }
   @keyframes float {
     0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)}
   }
@@ -87,6 +99,7 @@
   .upload-area {
     display:flex; align-items:center; gap:12px;
     flex-wrap:wrap;
+	display: none;
   }
 
   .upload-btn {
@@ -374,9 +387,9 @@
 
 <header>
   <div class="logo">
-    <span class="logo-icon">🦐</span>
+    <span class="logo-icon-img"></span>
     <div>
-      <h1>SuryaBusiness</h1>
+      <h1>SuryaAqua</h1>
       <span>Shrimp Farm Analytics</span>
     </div>
   </div>
@@ -874,7 +887,7 @@ function closeDetail() {
      '/files/shrimp_farm_2024.xlsx'
    Set to null or '' to disable auto-load.
 ═══════════════════════════════════════════════ */
-const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
+const EXCEL_FILE_PATH = 'SuryaBusiness/data.xlsx';   // ← UPDATE THIS PATH
 //const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
 
 async function autoLoad() {

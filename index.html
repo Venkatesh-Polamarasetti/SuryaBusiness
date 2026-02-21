@@ -530,6 +530,37 @@ function getCellVal(ws, addr) {
   if (!cell) return null;
   return cell.v;
 }
+function excelDateToJSDate(excelDate) {
+    // 25569 is the number of days from 1900-01-01 to 1970-01-01
+    const date = new Date((excelDate - 25569) * 86400 * 1000); 
+    // Handle potential timezone offsets
+    // date.setTime(date.getTime() + (date.getTimezoneOffset() * 60000));
+    return date.toDateString();
+}
+function daysBetweenToday(startDate) {
+  const today = new Date();
+  const start = new Date(startDate);
+
+  let years = today.getFullYear() - start.getFullYear();
+  let months = today.getMonth() - start.getMonth();
+  let days = today.getDate() - start.getDate();
+
+  // Adjust for negative day difference
+  if (days < 0) {
+    months--;
+    // Get the number of days in the previous month
+    const daysInPreviousMonth = new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+    days += daysInPreviousMonth;
+  }
+
+  // Adjust for negative month difference
+  if (months < 0) {
+    years--;
+    months += 12;
+  }
+
+  return years +' years '+ months +' months '+ days +' days';
+}
 
 function parseTermSheet(ws, sheetName, termNum) {
   // Convert sheet to array of arrays for flexible parsing
@@ -660,7 +691,7 @@ function parseTermSheet(ws, sheetName, termNum) {
 
   return {
     termNum, sheetName,
-    seedDate: seedDate ? seedDate : null,
+    seedDate: seedDate ? excelDateToJSDate(seedDate) : null,
     days: days,
     totalInvestment: totalInvestment || 0,
     totalIncome: totalIncome || 0,
@@ -690,7 +721,7 @@ function renderDashboard() {
     <div class="meta-item"><span class="mlabel">Loss Terms</span><span class="mval" style="color:var(--loss)">${lossTerms}</span></div>
     <div class="meta-item"><span class="mlabel">Total Investment</span><span class="mval">${fmt(totalInv)}</span></div>
     <div class="meta-item"><span class="mlabel">Total Income</span><span class="mval">${fmt(totalInc)}</span></div>
-	<div class="meta-item"><span class="mlabel">Total Duration</span><span class="mval">${fmt(totalInc)}</span></div>
+	<div class="meta-item"><span class="mlabel">Total Duration</span><span class="mval">${daysBetweenToday(new Date(allTerms[0].seedDate))}</span></div>
   `;
 
   // Summary cards
@@ -923,7 +954,7 @@ async function autoLoad() {
     if (!res.ok) throw new Error('HTTP ' + res.status + ' — ' + res.statusText);
     const arrayBuffer = await res.arrayBuffer();
     const data = new Uint8Array(arrayBuffer);
-    const wb = XLSX.read(data, { type: 'array' });
+    const wb = XLSX.read(data, { type: 'array', cellDates: true });
 
     // Show filename in header
     const parts = EXCEL_FILE_PATH.split('/');

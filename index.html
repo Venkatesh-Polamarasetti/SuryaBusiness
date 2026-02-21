@@ -540,7 +540,7 @@ function excelDateToJSDate(excelDate) {
 function daysBetweenToday(startDate) {
   const today = new Date();
   const start = new Date(startDate);
-console.log("Dates:",today,startDate)
+  //console.log("Dates:",today,startDate)
   let years = today.getFullYear() - start.getFullYear();
   let months = today.getMonth() - start.getMonth();
   let days = today.getDate() - start.getDate();
@@ -689,7 +689,7 @@ function parseTermSheet(ws, sheetName, termNum) {
       }
     }
   }
-
+console.log("seedDate:",seedDate)
   return {
     termNum, sheetName,
     seedDate: seedDate ? excelDateToJSDate(seedDate) : null,

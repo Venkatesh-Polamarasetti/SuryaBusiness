@@ -705,7 +705,7 @@ function renderDashboard() {
   meta.innerHTML = `
     <div class="meta-item"><span class="mlabel">Total Terms</span><span class="mval">${allTerms.length}</span></div>
 	<div class="meta-item"><span class="mlabel">Total Duration</span><span class="mval">${daysBetweenToday(new Date(allTerms[0].seedDate))}</span></div>
-    <div class="meta-item"><span class="mlabel">Profitable Terms</span><span class="mval" style="color:var(--profit)">${profitTerms}</span></div>
+    <div class="meta-item"><span class="mlabel">Profit Terms</span><span class="mval" style="color:var(--profit)">${profitTerms}</span></div>
     <div class="meta-item"><span class="mlabel">Loss Terms</span><span class="mval" style="color:var(--loss)">${lossTerms}</span></div>
     <div class="meta-item"><span class="mlabel">Total Investment</span><span class="mval">${fmt(totalInv)}</span></div>
     <div class="meta-item"><span class="mlabel">Total Income</span><span class="mval">${fmt(totalInc)}</span></div>

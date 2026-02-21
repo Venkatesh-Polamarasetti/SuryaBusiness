@@ -643,7 +643,8 @@ function parseTermSheet(ws, sheetName, termNum) {
   //console.log("sumInv",sumInv)
   totalInvestment = sumInv;
   //if (!totalInvestment && sumInv > 0) totalInvestment = sumInv;
-  if (!totalIncome && sumInc > 0) totalIncome = sumInc;
+  totalIncome = sumInc;
+  //if (!totalIncome && sumInc > 0) totalIncome = sumInc;
   if (!profit && totalInvestment && totalIncome) profit = totalIncome - totalInvestment;
 
   // Parse growth data

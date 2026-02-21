@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shrimp Farm Analytics Dashboard</title>
+<title>Surya Aqua Shrimp Farm</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -81,6 +81,19 @@
 	width: 35px;
     height: 35px;
 	border-radius: 8%;
+  }
+  .logo-icon-shrimp {
+    font-size:28px !important;
+    filter: drop-shadow(0 0 8px rgba(0,212,170,0.6));
+    background-image: url('shrimp.png');
+    /* Optional: Add other background properties for better control */
+    background-repeat: no-repeat; /* Prevents the image from repeating */
+    background-size: cover;      /* Scales the image to cover the entire element */
+    background-position: center; /* Centers the image */
+	width: 35px;
+    height: 35px;
+	border-radius: 8%;
+	float: right;
   }
   @keyframes float {
     0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)}
@@ -400,6 +413,7 @@
     </button>
     <input type="file" id="fileInput" accept=".xlsx,.xls" onchange="handleFile(event)">
   </div>
+  <span class="logo-icon-shrimp"></span>
 </header>
 
 <main>
@@ -533,11 +547,11 @@ function parseTermSheet(ws, sheetName, termNum) {
 
   // Helper: find a value in sheet by searching for a label pattern
   function findByLabel(label) {
-    for (let r=0; r<rows.length; r++) {
+    for (let r=0; r<rows.length; r++) {	
       for (let c=0; c<rows[r].length; c++) {
         const v = String(rows[r][c] || '').toLowerCase().replace(/\s+/g,'');
         if (v.includes(label.toLowerCase().replace(/\s+/g,''))) {
-          // Value is likely next cell or below
+          // Value is likely next cell
           if (rows[r][c+1] !== '' && rows[r][c+1] !== undefined) return rows[r][c+1];
           if (rows[r+1] && rows[r+1][c] !== '' && rows[r+1][c] !== undefined) return rows[r+1][c];
         }
@@ -590,8 +604,9 @@ function parseTermSheet(ws, sheetName, termNum) {
   // Scan investment section (rows after header, col ~0-4)
   if (invStartCol >= 0) {
     for (let r=3; r<rows.length; r++) {
-      const item = rows[r][invStartCol + 1];
-      const amount = rows[r][invStartCol + 2];
+	  //console.log("rows:",rows);
+      const item = rows[r][invStartCol + 2];
+      const amount = rows[r][invStartCol + 3];
       if (item && typeof amount === 'number') {
         investments.push({ item: String(item), amount });
       }
@@ -602,7 +617,7 @@ function parseTermSheet(ws, sheetName, termNum) {
       for (let c=0; c<5; c++) {
         if (typeof rows[r][c] === 'string' && rows[r][c].length > 1) {
           const possibleAmt = rows[r][c+1];
-          if (typeof possibleAmt === 'number' && possibleAmt > 0) {
+          if (typeof possibleAmt === 'number' && possibleAmt > 0 && r<26) {
             investments.push({ item: rows[r][c], amount: possibleAmt });
           }
         }
@@ -613,19 +628,21 @@ function parseTermSheet(ws, sheetName, termNum) {
   // Collect income rows
   if (incomeStartCol >= 0) {
     for (let r=3; r<rows.length; r++) {
-      const item = rows[r][incomeStartCol + 1];
+      const item = rows[r][incomeStartCol + 2];
       const amount = rows[r][incomeStartCol + 3];
-      if (item && typeof amount === 'number') {
+      if (item && typeof amount === 'number' && r<26) {
         incomes.push({ item: String(item), amount });
       }
     }
   }
 
   // Sum investments/incomes
+  //console.log("incomes",incomes)
   const sumInv = investments.reduce((a, b) => a + b.amount, 0);
   const sumInc = incomes.reduce((a, b) => a + b.amount, 0);
-
-  if (!totalInvestment && sumInv > 0) totalInvestment = sumInv;
+  //console.log("sumInv",sumInv)
+  totalInvestment = sumInv;
+  //if (!totalInvestment && sumInv > 0) totalInvestment = sumInv;
   if (!totalIncome && sumInc > 0) totalIncome = sumInc;
   if (!profit && totalInvestment && totalIncome) profit = totalIncome - totalInvestment;
 
@@ -634,7 +651,7 @@ function parseTermSheet(ws, sheetName, termNum) {
     for (let r=3; r<rows.length; r++) {
       const date = rows[r][growthStartCol];
       const count = rows[r][growthStartCol + 1];
-      if (date && typeof count === 'number') {
+      if (date) {
         growthData.push({ date: String(date), count });
       }
     }
@@ -642,8 +659,8 @@ function parseTermSheet(ws, sheetName, termNum) {
 
   return {
     termNum, sheetName,
-    seedDate: seedDate ? String(seedDate) : null,
-    days: typeof days === 'number' ? days : null,
+    seedDate: seedDate ? seedDate : null,
+    days: days,
     totalInvestment: totalInvestment || 0,
     totalIncome: totalIncome || 0,
     profit: profit || (totalIncome - totalInvestment) || 0,
@@ -672,6 +689,7 @@ function renderDashboard() {
     <div class="meta-item"><span class="mlabel">Loss Terms</span><span class="mval" style="color:var(--loss)">${lossTerms}</span></div>
     <div class="meta-item"><span class="mlabel">Total Investment</span><span class="mval">${fmt(totalInv)}</span></div>
     <div class="meta-item"><span class="mlabel">Total Income</span><span class="mval">${fmt(totalInc)}</span></div>
+	<div class="meta-item"><span class="mlabel">Total Duration</span><span class="mval">${fmt(totalInc)}</span></div>
   `;
 
   // Summary cards
@@ -801,6 +819,7 @@ function renderCharts(totalProfit, totalInv) {
 
 function renderTable() {
   const tbody = document.getElementById('termsBody');
+  console.log("allTerms:",allTerms);
   tbody.innerHTML = allTerms.map((t, i) => `
     <tr class="clickable" onclick="showDetail(${i})">
       <td style="font-weight:700;color:var(--accent)">${t.sheetName}</td>
@@ -808,7 +827,7 @@ function renderTable() {
       <td>${fmt(t.totalIncome)}</td>
       <td style="color:${t.profit>=0?'var(--profit)':'var(--loss)'}; font-weight:700">${fmtSigned(t.profit)}</td>
       <td><span class="badge ${t.profit>=0?'profit':'loss'}">${t.profit>=0?'PROFIT':'LOSS'}</span></td>
-      <td>${t.days ? t.days + ' days' : t.seedDate || '—'}</td>
+      <td>${t.days ? t.days : t.seedDate || '—'}</td>
     </tr>
   `).join('');
 }
@@ -846,7 +865,7 @@ function showDetail(idx) {
     <div class="detail-section">
       <h4>📈 Summary</h4>
       <div class="detail-row"><span class="label">Seed Date</span><span class="val">${t.seedDate || '—'}</span></div>
-      <div class="detail-row"><span class="label">Duration</span><span class="val">${t.days ? t.days + ' days' : '—'}</span></div>
+      <div class="detail-row"><span class="label">Duration</span><span class="val">${t.days ? t.days : '—'}</span></div>
       <div class="detail-row"><span class="label">Investment</span><span class="val">${fmt(t.totalInvestment)}</span></div>
       <div class="detail-row"><span class="label">Income</span><span class="val">${fmt(t.totalIncome)}</span></div>
       <div class="detail-row">
@@ -888,7 +907,6 @@ function closeDetail() {
    Set to null or '' to disable auto-load.
 ═══════════════════════════════════════════════ */
 const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
-//const EXCEL_FILE_PATH = 'data.xlsx';   // ← UPDATE THIS PATH
 
 async function autoLoad() {
   if (!EXCEL_FILE_PATH) return;

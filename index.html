@@ -651,7 +651,7 @@ function parseTermSheet(ws, sheetName, termNum) {
     for (let r=3; r<rows.length; r++) {
       const date = rows[r][growthStartCol+2];
       const count = rows[r][growthStartCol + 1];
-      if (date) {
+      if (date && r < 12) {
         growthData.push({ date: String(date), count });
       }
     }

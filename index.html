@@ -543,15 +543,30 @@ function excelDateToJSDate(excelDate) {
 		return date.toDateString();
 	}
 }
-function daysBetweenToday(startDate) {
-	//const today = new Date();
-	startDate = new Date('2023-04-01');
-	//var startDate = new Date(date);
-    var diffDate = new Date(new Date() - startDate);
-    return ((diffDate.toISOString().slice(0, 4) - 1970) + "Y " + diffDate.getMonth() + "M " + (diffDate.getDate()-1) + "D");
+function daysBetweenToday(startDate, singleNode=null) {
+	if(singleNode == 'days'){
+		var sdate = new Date(startDate);
+		var today = new Date();
+		// Define a day in milliseconds (1000ms * 60s * 60m * 24h)
+	    const oneDayInMs = 1000 * 60 * 60 * 24;
+	    const utcDate1 = Date.UTC(sdate.getFullYear(), sdate.getMonth(), sdate.getDate());
+	    const utcDate2 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+	    // Calculate the difference in milliseconds and convert to days
+	    const differenceInMs = utcDate2 - utcDate1;
+	    const differenceInDays = differenceInMs / oneDayInMs;
+	    // Use Math.floor() to return the integer number of full days
+	    return Math.floor(differenceInDays)+1 + ' days';
+	}else{
+		//const today = new Date();
+		startDate = new Date('2023-04-01');
+		//var startDate = new Date(date);
+		var diffDate = new Date(new Date() - startDate);
+		return ((diffDate.toISOString().slice(0, 4) - 1970) + "Y " + diffDate.getMonth() + "M " + (diffDate.getDate()-1) + "D");
+	}
 }
 
 function parseTermSheet(ws, sheetName, termNum) {
+	console.log("SHEETS:",ws,sheetName,termNum)
   // Convert sheet to array of arrays for flexible parsing
   const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:Z100');
   const rows = [];
@@ -680,7 +695,7 @@ function parseTermSheet(ws, sheetName, termNum) {
   return {
     termNum, sheetName,
     seedDate: seedDate ? excelDateToJSDate(seedDate) : null,
-    days: days,
+    days: termNum ==12 ? daysBetweenToday(excelDateToJSDate(seedDate), 'days') : days,
     totalInvestment: totalInvestment || 0,
     totalIncome: totalIncome || 0,
     profit: profit || (totalIncome - totalInvestment) || 0,
@@ -935,7 +950,7 @@ async function autoLoad() {
   document.getElementById('autoLoadStatus').style.display = 'block';
   document.getElementById('autoLoadMsg').textContent = 'Loading: ' + EXCEL_FILE_PATH;
   document.getElementById('promptIcon').textContent = '⏳';
-  document.getElementById('promptTitle').textContent = 'Auto-loading...';
+  document.getElementById('promptTitle').textContent = 'Loading Data...';
 
   try {
     const res = await fetch(EXCEL_FILE_PATH);

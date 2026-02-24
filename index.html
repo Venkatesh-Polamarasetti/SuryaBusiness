@@ -555,7 +555,7 @@ function daysBetweenToday(startDate, singleNode=null) {
 	    const differenceInMs = utcDate2 - utcDate1;
 	    const differenceInDays = differenceInMs / oneDayInMs;
 	    // Use Math.floor() to return the integer number of full days
-	    return Math.floor(differenceInDays)+1 + ' days';
+	    return Math.floor(differenceInDays) + ' days';
 	}else{
 		//const today = new Date();
 		startDate = new Date('2023-04-01');

@@ -520,7 +520,7 @@ function parseWorkbook(wb) {
 
   allTerms = termSheets.map((name, idx) => {
     const ws = wb.Sheets[name];
-    return parseTermSheet(ws, name, idx + 1);
+    return parseTermSheet(ws, name, idx + 1, termSheets.length);
   });
 
   renderDashboard();
@@ -565,8 +565,8 @@ function daysBetweenToday(startDate, singleNode=null) {
 	}
 }
 
-function parseTermSheet(ws, sheetName, termNum) {
-	console.log("SHEETS:",ws,sheetName,termNum)
+function parseTermSheet(ws, sheetName, termNum, totalTerms) {
+	console.log("SHEETS:",ws,sheetName,termNum, totalTerms)
   // Convert sheet to array of arrays for flexible parsing
   const range = XLSX.utils.decode_range(ws['!ref'] || 'A1:Z100');
   const rows = [];

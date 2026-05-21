@@ -695,7 +695,7 @@ function parseTermSheet(ws, sheetName, termNum) {
   return {
     termNum, sheetName,
     seedDate: seedDate ? excelDateToJSDate(seedDate) : null,
-    days: termNum ==12 ? daysBetweenToday(excelDateToJSDate(seedDate), 'days') : days,
+    days: termNum ==13 ? daysBetweenToday(excelDateToJSDate(seedDate), 'days') : days,
     totalInvestment: totalInvestment || 0,
     totalIncome: totalIncome || 0,
     profit: profit || (totalIncome - totalInvestment) || 0,

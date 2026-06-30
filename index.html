@@ -638,8 +638,8 @@ function parseTermSheet(ws, sheetName, termNum, totalTerms) {
 
   // Scan investment section (rows after header, col ~0-4)
   if (invStartCol >= 0) {
-    for (let r=3; r<rows.length; r++) {
-	  //console.log("rows:",rows);
+    for (let r=3; r<30; r++) {
+	  //console.log("invStartCol:",invStartCol,r, rows);
       const item = rows[r][invStartCol + 2];
       const amount = rows[r][invStartCol + 3];
       if (item && typeof amount === 'number') {
